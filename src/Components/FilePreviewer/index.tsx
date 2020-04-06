@@ -9,7 +9,7 @@ type Props = {};
 const FilePreview: React.FC<Props> = props => {
     const {} = props;
 
-    const file = '/public/4-software_lifecycle_models.pdfnp';
+    const file = '';
     const type = 'png';
 
     return <FilePreviewer fileType={type} filePath={file} />;

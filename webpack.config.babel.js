@@ -3,22 +3,23 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ErrorOverlayPlugin from 'error-overlay-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
 module.exports = {
     entry: path.join(__dirname, 'src', 'index.tsx'),
     output: {
         path: path.join(__dirname, 'build'),
-        filename: 'index.bundle.js',
-        sourceMapFilename: 'index.js.map'
+        filename: 'bundle.js',
+        sourceMapFilename: 'bandle.js.map'
     },
-    mode: process.env.NODE_ENV || 'development',
-    devtool: 'cheap-source-map',
+    mode: 'development',
+    devtool: 'inline-source-map',
     resolve: {
         modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-        extensions: ['.js', '.ts', '.tsx']
+        extensions: ['.ts', '.tsx', '.js', 'jsx']
     },
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        contentBase: path.join(__dirname, 'build'),
         compress: true,
         port: 3000,
         open: true,
@@ -41,13 +42,22 @@ module.exports = {
             publicPath: false
         }
     },
+
     module: {
         rules: [
             {
+                enforce: 'pre',
                 test: /\.(js|jsx|ts|tsx)$/,
-                // we do not want anything from node_modules to be compiled
                 exclude: /node_modules/,
-                use: ['babel-loader', 'eslint-loader']
+                loader: 'eslint-loader',
+                options: {
+                    cache: true
+                }
+            },
+            {
+                test: /\.(js|jsx|ts|tsx)$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader'
             },
             {
                 test: /\.(css|scss)$/,
@@ -79,7 +89,13 @@ module.exports = {
         mangleWasmImports: true,
         mergeDuplicateChunks: true,
         minimize: true,
-        nodeEnv: 'production'
+        nodeEnv: 'production',
+        minimizer: [
+            new TerserPlugin({
+                cache: true,
+                parallel: true
+            })
+        ]
     },
     plugins: [
         new HtmlWebpackPlugin({

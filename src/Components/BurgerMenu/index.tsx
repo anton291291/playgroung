@@ -4,13 +4,19 @@ import styled from 'styled-components';
 
 import { ListItem, List, ListItemText, ListItemIcon } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faFile, faSignature } from '@fortawesome/free-solid-svg-icons';
+import {
+    faHome,
+    faFile,
+    faSignature,
+    faShareAltSquare
+} from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
 const StyledDiv = styled.div`
     width: 220px;
 
     && {
-        button:hover {
+        a:hover {
             background-color: mediumseagreen;
         }
     }
@@ -38,6 +44,8 @@ const BurgerMenu: React.FC<Props> = props => {
                 break;
             case 'CryptoSign':
                 return <FontAwesomeIcon size='lg' icon={faSignature} />;
+            case 'Swagger':
+                return <FontAwesomeIcon size='lg' icon={faShareAltSquare} />;
             default:
                 break;
         }
@@ -47,19 +55,16 @@ const BurgerMenu: React.FC<Props> = props => {
         <StyledDiv role='presentation' onClick={openBurgerMenu}>
             <List dense={true} disablePadding={true}>
                 {listItems.map((item, index) => (
-                    <>
-                        <ListItem
-                            key={index}
-                            button
-                            component='button'
-                            divider={true}
-                        >
-                            <ListItemIcon>
-                                {handleSwitchIcons(item)}
-                            </ListItemIcon>
-                            <ListItemText primary={item} />
-                        </ListItem>
-                    </>
+                    <ListItem
+                        key={index}
+                        button
+                        component={Link}
+                        to={`/${item}`}
+                        divider={true}
+                    >
+                        <ListItemIcon>{handleSwitchIcons(item)}</ListItemIcon>
+                        <ListItemText primary={item} />
+                    </ListItem>
                 ))}
             </List>
         </StyledDiv>
@@ -67,7 +72,7 @@ const BurgerMenu: React.FC<Props> = props => {
 };
 
 BurgerMenu.defaultProps = {
-    listItems: ['Home', 'FilePreviewer', 'CryptoSign']
+    listItems: [' ', 'FilePreviewer', 'CryptoSign', 'Swagger']
 };
 
 export default BurgerMenu;

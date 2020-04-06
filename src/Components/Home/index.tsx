@@ -1,11 +1,25 @@
 import React, { useState } from 'react';
 
-import styled from 'styled-components';
-import { AppBar, Toolbar, IconButton, Drawer } from '@material-ui/core';
+import styled, { css } from 'styled-components';
+import {
+    AppBar,
+    Toolbar,
+    IconButton,
+    Drawer,
+    Box,
+    Typography
+} from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
-import { BurgerMenu } from '..';
+import { BurgerMenu, Modal } from '..';
+import { Field, reduxForm } from 'redux-form';
+import { renderTextField, validate } from '../ReduxForms';
 
-type Props = {};
+type Props = {
+    active?: boolean;
+    handleSubmit: any;
+    pristine: any;
+    submitting: any;
+};
 
 const StyledAppBar = styled(AppBar)`
     && {
@@ -13,8 +27,41 @@ const StyledAppBar = styled(AppBar)`
     }
 `;
 
+const StyledButton = styled.button`
+    background: linear-gradient(
+        90deg,
+        rgba(250, 87, 0, 1) 0%,
+        rgba(250, 87, 0, 1) 41%,
+        rgba(254, 152, 0, 1) 81%
+    );
+    background-size: 300% 100%;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+    min-width: 100px;
+    min-height: 40px;
+    font-size: 20px;
+    margin: 20px;
+    transition: all 1s;
+
+    &:hover {
+        background-position: 100% 0;
+    }
+`;
+
+const StyledDiv = styled.div`
+    background-color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+
+    &:focus {
+        outline: none;
+    }
+`;
+
 const Home: React.FC<Props> = props => {
-    const {} = props;
+    const { handleSubmit, pristine, submitting } = props;
 
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
 
@@ -45,6 +92,46 @@ const Home: React.FC<Props> = props => {
                     </IconButton>
                 </Toolbar>
             </StyledAppBar>
+            <Box
+                mt={10}
+                display='flex'
+                justifyContent='center'
+                alignItems='center'
+                width='auto'
+                flexDirection='column'
+            >
+                <Modal
+                    childrenComponent={
+                        <StyledDiv>
+                            <Typography variant='h4'>Заголовок</Typography>
+                            <p>lorum ipsum lorum ipsumlorum ipsumlorum ipsum</p>
+                        </StyledDiv>
+                    }
+                />
+            </Box>
+            <Box
+                display='flex'
+                flexDirection='column'
+                alignItems='center'
+                width='100%'
+            >
+                <form
+                    onSubmit={handleSubmit(value => {
+                        console.log(value);
+                    })}
+                >
+                    <Field
+                        name='email'
+                        component={renderTextField}
+                        label='Email'
+                    />
+                    <StyledButton disabled={pristine || submitting}>
+                        Submit
+                    </StyledButton>
+                </form>
+                <Box mt={5} />
+                <Box mb={5} />
+            </Box>
             <Drawer open={isOpenDrawer} onClose={toogleDrawer(false)}>
                 <BurgerMenu openBurgerMenu={toogleDrawer(false)} />
             </Drawer>
@@ -52,4 +139,7 @@ const Home: React.FC<Props> = props => {
     );
 };
 
-export default Home;
+export default reduxForm({
+    form: 'MaterialUiForm',
+    validate
+})(Home);
