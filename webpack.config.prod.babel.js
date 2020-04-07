@@ -1,3 +1,10 @@
+import path from 'path';
+
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+
 module.exports = {
     entry: path.join(__dirname, 'src', 'index.tsx'),
     output: {
@@ -5,10 +12,14 @@ module.exports = {
         filename: 'bundle.js'
     },
     mode: 'production',
-    devtool: 'false',
+    devtool: 'source-map',
     resolve: {
         modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-        extensions: ['.ts', '.tsx', '.js', 'jsx']
+        extensions: ['.ts', '.tsx', '.js', 'jsx'],
+        alias: {
+            'react-spring$': 'react-spring/web.cjs',
+            'react-spring/renderprops$': 'react-spring/renderprops.cjs'
+        }
     },
     module: {
         rules: [
@@ -44,13 +55,14 @@ module.exports = {
                 }
             }
         },
+        namedChunks: true,
         mangleWasmImports: true,
-        mergeDuplicateChunks: true,
-        minimize: true,
+        removeAvailableModules: true,
         minimizer: [
             new TerserPlugin({
                 cache: true,
-                parallel: true
+                parallel: true,
+                sourceMap: true
             })
         ]
     },
@@ -58,7 +70,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.join(__dirname, 'public', 'index.html')
         }),
-        new ErrorOverlayPlugin(),
-        new CleanWebpackPlugin()
+        new CleanWebpackPlugin(),
+        new BundleAnalyzerPlugin()
     ]
 };

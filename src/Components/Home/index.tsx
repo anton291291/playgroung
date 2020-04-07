@@ -10,7 +10,7 @@ import {
     Typography
 } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
-import { BurgerMenu, Modal } from '..';
+import { BurgerMenu, Modal, AnimatedCard } from '..';
 import { Field, reduxForm } from 'redux-form';
 import { renderTextField, validate } from '../ReduxForms';
 
@@ -130,6 +130,7 @@ const Home: React.FC<Props> = props => {
                     </StyledButton>
                 </form>
                 <Box mt={5} />
+                <AnimatedCard />
                 <Box mb={5} />
             </Box>
             <Drawer open={isOpenDrawer} onClose={toogleDrawer(false)}>
